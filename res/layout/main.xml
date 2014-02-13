@@ -5,7 +5,7 @@
     tools:context=".GetContactsListDemoActivity" >
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tx_context_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -16,21 +16,39 @@
         android:text="Contacts Information"
         android:textSize="20dp" />
 
+    <RelativeLayout
+        android:id="@+id/rl_btn_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tx_context_information" >
 
+        <Button
+            android:id="@+id/btn_get_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_contacts_btn" />
+
+        <Button
+            android:id="@+id/btn_get_contacts_by_pick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/btn_get_contacts"
+            android:text="@string/get_contacts_pick_btn" />
+    </RelativeLayout>
 
     <ProgressBar
-        android:id="@+id/progressBar1"
+        android:id="@+id/pb_test"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rl_btn_group" />
 
     <ListView
         android:id="@+id/lv_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar1" />
+        android:layout_below="@+id/pb_test" />
 
 </RelativeLayout>

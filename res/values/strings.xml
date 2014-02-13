@@ -4,5 +4,7 @@
     <string name="app_name">AndroidPhoneContactsExample</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="get_contacts_pick_btn">get contacts data by pick!!</string>
+    <string name="get_contacts_btn">get contacts data!!</string>
 
 </resources>

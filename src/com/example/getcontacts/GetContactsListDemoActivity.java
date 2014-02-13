@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +36,8 @@ public class GetContactsListDemoActivity extends Activity {
     public static final String TAG = "contacts";
     public ListView lv_contact;
     private MyAdapter contactAdapter;
+    private Button btn_get_contacts_by_pick;
+    private Button btn_get_contacts;
 
     private ArrayList<Long> contactList = null;
 
@@ -53,15 +57,75 @@ public class GetContactsListDemoActivity extends Activity {
     String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
     String DATA = ContactsContract.CommonDataKinds.Email.DATA;
 
+    public static final int PICK_CONTACT = 123;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        lv_contact = (ListView) findViewById(R.id.lv_contact);
-
-        setContactList();
-        contactAdapter = new MyAdapter(this);
+        initRequireData();
+        setComponmentView();
+        contactAdapter = new MyAdapter(GetContactsListDemoActivity.this);
         lv_contact.setAdapter(contactAdapter);
+    }
+
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        switch (reqCode) {
+            case (PICK_CONTACT):
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri contactData = data.getData();
+                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
+
+                    if (contactList != null) {
+                        contactList.clear();
+                    } else {
+                        contactList = new ArrayList<Long>();
+                    }
+
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            Long contact_id = c.getLong(c.getColumnIndex(_ID));
+                            contactList.add(contact_id);
+                        }
+                    }
+                    contactAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+    }
+
+    private void setComponmentView() {
+        lv_contact = (ListView) findViewById(R.id.lv_contact);
+        btn_get_contacts_by_pick = (Button) findViewById(R.id.btn_get_contacts_by_pick);
+        btn_get_contacts_by_pick.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT);
+            }
+
+        });
+
+        btn_get_contacts = (Button) findViewById(R.id.btn_get_contacts);
+
+        btn_get_contacts.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                setContactList();
+                contactAdapter.notifyDataSetChanged();
+
+            }
+
+        });
+    }
+
+    private void initRequireData() {
+        contactList = new ArrayList<Long>();
     }
 
     private void setContactList() {
@@ -276,6 +340,7 @@ public class GetContactsListDemoActivity extends Activity {
 
             return convertView;
         }
+
         class ViewHolder {
             ImageView userPic;
             TextView userName;
